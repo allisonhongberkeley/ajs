@@ -56,8 +56,8 @@ export function AllergenTag({ label, selected, onPress, variant = 'allergen', bo
 
 const styles = StyleSheet.create({
   tag: {
-    paddingHorizontal: 14,
-    paddingVertical: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
     borderRadius: 20,
     backgroundColor: '#F9F9F9',
   },
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
     gap: 4,
   },
   text: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#555',
     fontFamily: 'Space Mono',
   },
