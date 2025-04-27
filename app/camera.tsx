@@ -28,6 +28,7 @@ export default function CameraScreen() {
                 style={StyleSheet.absoluteFillObject}
                 />
             </ThemedView>
+            <Text>Scan the ingredients list</Text>
         </ImageBackground>
     );
 }
@@ -36,7 +37,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         alignItems: 'center',
-        justifyContent: 'center',
+        paddingTop: 109,
     },
     camera: {
         flexShrink: 0,
