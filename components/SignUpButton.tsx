@@ -9,7 +9,7 @@ interface SignUpButtonProps {
 export function SignUpButton({ onPress }: SignUpButtonProps) {
   return (
     <LinearGradient
-      colors={['rgba(26, 163, 255, 0.8)', 'rgba(204, 199, 199, 0.8)']}
+      colors={['rgba(26, 163, 255, 0.8)', 'rgba(255, 255, 255, 0.8)']}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 0 }}
       style={styles.buttonContainer}
@@ -25,7 +25,7 @@ export function SignUpButton({ onPress }: SignUpButtonProps) {
       </View>
 
       <Pressable onPress={onPress} style={styles.arrowButton}>
-        <Ionicons name="arrow-forward" size={24} color="#007AFF" />
+        <Ionicons name="arrow-forward" size={24} color="#1AA3FF" />
       </Pressable>
     </LinearGradient>
   );
