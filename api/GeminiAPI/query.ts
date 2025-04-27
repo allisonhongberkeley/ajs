@@ -23,6 +23,8 @@ export async function queryIngredients(photoUri: string) {
             Please return at most 10 ingredients.
             Please capitalize the first letter of every word.
             Do not include any other text or explanation.
+            Do not include any periods or other punctuation marks.
+            Do not include duplicates.
             Please keep ingredient names simple and consistent. For example, Peanuts should not be 
             rewritten as Roasted Peanuts or another form.`
             .trim();
@@ -55,9 +57,13 @@ export async function querySafety({ingredients, allergies, dietaryRestrictions} 
         Please also list the allergies and dietary restrictions that are violated.
         All allergies must be from the ingredients list.
         All output dietary restrictions must be from the dietary restrictions list.
-        Please format the answer as a in comma-separated format, with the first element being Yes or No, and the rest being the ingredients I cannot consume.
+        Please format the answer as a in comma-separated format, with the first element
+        being Yes or No, and the rest being the ingredients I cannot consume, 
+        the allergies that are violated, and the dietary restrictions that are violated.
         Please capitalize the first letter of every word.
         Do not include any other text or explanation.
+        Do not include any periods or other punctuation marks.
+        Do not include duplicates.
         Please keep ingredient names simple and consistent. For example, Peanuts should not be 
         rewritten as Roasted Peanuts or another form.`
         .trim();
@@ -78,13 +84,10 @@ export async function queryFoodName(photoUri: string) {
       const prompt = 
           `Based on the ingredients in the image, what is the name of the food?
           Please return the name of the food.
-          Please ignore any other text in the image besides the food name.
-          Please ignore any text that is not related to the food name.
-          If the food name is not visible, don't return anything.
-          If the image is not a food, don't return anything.
-          Please return the food name in a single line.
           Please capitalize the first letter of every word.
-          Do not include any other text or explanation.`
+          Do not include any other text or explanation.
+          Do not include any periods or other punctuation marks.
+          Do not include duplicates.`
           .trim();
 
       const geminiResponse = await ai.models.generateContent({
@@ -104,6 +107,7 @@ export async function queryFoodName(photoUri: string) {
       throw error;
   };
 }
+
 export async function queryRecommendations({foodName, allergies, dietaryRestrictions} : {foodName: string, allergies: string[], dietaryRestrictions: string[]}) {
     const prompt = 
         `I have the following allergies/dietary restrictions: ${[...allergies, ...dietaryRestrictions].join(', ')}.
@@ -111,7 +115,9 @@ export async function queryRecommendations({foodName, allergies, dietaryRestrict
         Please give me two alternatives that are similar to ${foodName} and are safe for me to eat.
         Please format the answer as in comma-separated format.
         Please capitalize the first letter of every word.
-        Do not include any other text or explanation.`
+        Do not include any other text or explanation.
+        Do not include any periods or other punctuation marks.
+        Do not include duplicates.`
         .trim();
     
     console.log(prompt);

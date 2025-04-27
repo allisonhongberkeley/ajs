@@ -49,8 +49,9 @@ export default function CameraScreen() {
     const analyzeIngredients = async(uri: string) => {
       setLoading(true);
       const ingredients = await queryIngredients(uri);
-      const safety = await querySafety({ ingredients, allergies, dietaryRestrictions });
+      let safety = await querySafety({ ingredients, allergies, dietaryRestrictions });
       const isSafe = safety?.split(",")[0] === "Yes";
+      safety = safety?.split(",").slice(1).join(", ");
       const foodName = await queryFoodName(uri);
       let recommendations;
       if (!isSafe) {
