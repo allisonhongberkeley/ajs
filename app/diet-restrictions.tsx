@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 400,
     fontFamily: "Space Mono",
-    lineHeight: 22,
+    lineHeight: 40,
   },
   subtitle: {
     fontFamily: "SF Pro",
