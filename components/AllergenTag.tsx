@@ -1,40 +1,58 @@
 import { Text, TouchableOpacity, StyleSheet, View } from 'react-native';
-import { Ionicons } from '@expo/vector-icons'; // <-- Add this import
+import { Ionicons } from '@expo/vector-icons';
 
 interface AllergenTagProps {
   label: string;
   selected?: boolean;
   onPress?: () => void;
-  variant?: 'allergen' | 'diet'; 
+  variant?: 'allergen' | 'diet';
+  border?: boolean; // <-- New prop
 }
 
-export function AllergenTag({ label, selected, onPress, variant = 'allergen' }: AllergenTagProps) {
-    const isDiet = variant === 'diet';
-  
-    return (
-      <TouchableOpacity
-        style={[
-          styles.tag,
-          selected && (isDiet ? styles.selectedDietTag : styles.selectedTag)
-        ]}
-        onPress={onPress}
-        activeOpacity={0.7}
-      >
-        <View style={styles.content}>
-          {selected && (
-            <Ionicons
-              name="close"
-              size={16}
-              color={isDiet ? '#FF8F3A' : '#D9534F'} // orange if diet, red if allergen
-            />
-          )}
-          <Text style={styles.text}>
-            {label}
-          </Text>
-        </View>
-      </TouchableOpacity>
-    );
-  }  
+export function AllergenTag({ label, selected, onPress, variant = 'allergen', border = true }: AllergenTagProps) {
+  const isDiet = variant === 'diet';
+
+  const getTagStyles = () => {
+    if (!selected) {
+      return [styles.tag, border ? styles.withBorder : styles.noBorder];
+    }
+
+    if (isDiet) {
+      return [
+        styles.tag,
+        styles.selectedDietTag,
+        border ? styles.withDietBorder : styles.noBorder,
+      ];
+    } else {
+      return [
+        styles.tag,
+        styles.selectedTag,
+        border ? styles.withAllergenBorder : styles.noBorder,
+      ];
+    }
+  };
+
+  return (
+    <TouchableOpacity
+      style={getTagStyles()}
+      onPress={onPress}
+      activeOpacity={0.7}
+    >
+      <View style={styles.content}>
+        {selected && (
+          <Ionicons
+            name="close"
+            size={16}
+            color={isDiet ? '#FF8F3A' : '#D9534F'}
+          />
+        )}
+        <Text style={styles.text}>
+          {label}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+}
 
 const styles = StyleSheet.create({
   tag: {
@@ -42,20 +60,29 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 20,
     backgroundColor: '#F9F9F9',
+  },
+  withBorder: {
     borderWidth: 1,
     borderColor: '#EFEFF1',
-    margin: 5,
+  },
+  noBorder: {
+    borderWidth: 0,
   },
   selectedTag: {
     backgroundColor: '#FEECEC',
-    borderColor: '#F3A6A6',
   },
   selectedDietTag: {
     backgroundColor: '#FFF7EA',
+  },
+  withAllergenBorder: {
+    borderWidth: 1,
+    borderColor: '#F3A6A6',
+  },
+  withDietBorder: {
+    borderWidth: 1,
     borderColor: '#FFD7A8',
-  },  
+  },
   content: {
-    display: 'flex',
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
@@ -64,5 +91,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#555',
     fontFamily: 'Space Mono',
-  }
+  },
 });
