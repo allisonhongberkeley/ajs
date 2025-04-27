@@ -51,6 +51,13 @@ export default function CameraScreen() {
       const ingredients = await queryIngredients(uri);
       const safety = await querySafety({ ingredients, allergies, dietaryRestrictions });
       setLoading(false);
+      router.push({
+        pathname: '/results',
+        params: {
+          ingredients: ingredients,
+          safety: safety,
+        },
+      });
     };
 
     return (
