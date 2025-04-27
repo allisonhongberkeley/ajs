@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { StyleSheet, Image, ImageBackground, View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { Camera, CameraView } from 'expo-camera';
 import { useRouter } from 'expo-router';
-import { queryIngredients, querySafety } from '@/api/GeminiAPI/query';
+import { queryFoodName, queryIngredients, queryRecommendations, querySafety } from '@/api/GeminiAPI/query';
 import { useUserPreferences } from '@/utils/preferencesContext';
 
 export default function CameraScreen() {
@@ -50,12 +50,19 @@ export default function CameraScreen() {
       setLoading(true);
       const ingredients = await queryIngredients(uri);
       const safety = await querySafety({ ingredients, allergies, dietaryRestrictions });
+      const isSafe = safety?.split(",")[0] === "Yes";
+      const foodName = await queryFoodName(uri);
+      let recommendations;
+      if (!isSafe) {
+        recommendations = (await queryRecommendations({ foodName: foodName, allergies, dietaryRestrictions })).split(",");
+      }
       setLoading(false);
       router.push({
         pathname: '/results',
         params: {
           ingredients: ingredients,
           safety: safety,
+          recommendations: recommendations,
         },
       });
     };

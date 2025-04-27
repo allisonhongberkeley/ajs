@@ -12,7 +12,7 @@ import { useUserPreferences } from '@/utils/preferencesContext';
 export default function ResultsScreen( { isSafe, foodImage, foodName} : { isSafe: boolean, foodImage: string, foodName: string}) {
     const { selectedAllergens, selectedRestrictions } = useUserPreferences();
     const [warningIsOpen, setWarningIsOpen] = useState(false);
-    const { ingredients, safety } = useLocalSearchParams();
+    const { ingredients, safety, recommendations } = useLocalSearchParams();
     const bottomSheetRef = useRef(null);
     const router = useRouter();
 
