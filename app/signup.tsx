@@ -27,7 +27,8 @@ export default function SignUpScreen() {
 
   return (
     <ThemedView style={styles.container}>
-      <Image source={require('@/assets/images/byte.png')} style={styles.logo} />
+      <Image source={require('@/assets/images/byte.png')} style={styles.byte}/>
+      <Image source={require('@/assets/gifs/signupbg.gif')} style={styles.logo} />
 
       <Text style={styles.subtitle}>
         Let’s get started by making an account.
@@ -77,18 +78,30 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     paddingHorizontal: 20,
     paddingTop: 40,
-    gap: 16,
+    paddingBottom: 200,
+    gap: 8,
+  },
+  byte: {
+    width: 180,
+    // height: 200,
+    resizeMode: 'contain',
+    marginBottom: 0,
   },
   logo: {
-    width: 120,
-    height: 120,
+    position: 'absolute', 
+    bottom: 0,             
+    alignSelf: 'center',   
+    width: 300,            
+    height: 300,           
     resizeMode: 'contain',
-  },
+  },  
   subtitle: {
     fontSize: 16,
     color: '#666',
     textAlign: 'center',
-    marginVertical: 10,
+    marginVertical: 32,
+    marginTop: -52,
+    width: 200,
     fontFamily: 'SF Pro', // optional
   },
   inputWrapper: {

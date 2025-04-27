@@ -8,10 +8,17 @@ export default function Index() {
 
   return (
     <ThemedView style={styles.container}>
-      <Image source={require('@/assets/images/byte.png')} style={styles.logo} />
-      <Text style={styles.subtitle}>
-        Know before you buy.
-      </Text>
+      <Image
+        source={require('@/assets/images/circlebg.png')}
+        style={styles.footerImage}
+        resizeMode="contain"
+      />
+
+      {/* Main Content */}
+      <Image 
+        source={require('@/assets/gifs/index.gif')} 
+        style={styles.logo} 
+      />
 
       <SignUpButton onPress={() => router.push('/signup')} />
     </ThemedView>
@@ -21,22 +28,36 @@ export default function Index() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
+    paddingVertical: 40,
     gap: 20,
   },
   logo: {
-    width: 120,
-    height: 120,
+    width: 450,
+    height: 450,
+    marginBottom: 20,
+    marginRight: 40,
+    marginTop: 100,
     resizeMode: 'contain',
   },
-  subtitle: {
-    fontSize: 16,
-    textAlign: 'center',
-    marginVertical: 10,
-    color: '#666',
+  // subtitle: {
+  //   fontSize: 16,
+  //   textAlign: 'center',
+  //   marginVertical: 10,
+  //   color: '#666',
+  // },
+  footerImage: {
+    position: 'absolute',
+    bottom: -100,
+    alignSelf: 'center',
+    width: 450, 
+    height: 450, 
+    zIndex: 0, 
+    resizeMode: 'contain',
   },
+  
   Container: {
     marginTop: 20,
     flexDirection: 'row', 
