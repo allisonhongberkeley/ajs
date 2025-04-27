@@ -1,34 +1,70 @@
-import { StyleSheet, Text, View, Image, Button, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import { ThemedView } from "./ThemedView";
 import { AllergenTag } from "./AllergenTag";
-import { useState } from "react";
 
-export default function WarningTag( {warningIsOpen, setWarningIsOpen, foodRestrictions}: {warningIsOpen: boolean, setWarningIsOpen: React.Dispatch<React.SetStateAction<boolean>>, foodRestrictions: string[] | undefined} ) {
+interface WarningTagProps {
+  warningIsOpen: boolean;
+  setWarningIsOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  allergenRestrictions: string[];
+  dietaryRestrictions: string[];
+}
 
-    return (
-        <ThemedView style={warningIsOpen ? styles.openedDropdown : styles.unOpenedDropdown}>
-            <ThemedView style={warningIsOpen ? styles.openedContainer : styles.unOpenedContainer}>
-                <ThemedView style={styles.textContainer}>
-                    <Image source={require('@/assets/images/warning.png')} />
-                    <Text style={styles.containsText}>Contains</Text>
-                    {!warningIsOpen && <AllergenTag label={foodRestrictions?.[0] ?? ''} selected={true} />}
-                </ThemedView>
-                <TouchableOpacity onPress={() => setWarningIsOpen(!warningIsOpen)}>
-                    <Image source={require('@/assets/images/open-dropdown.png')} />
-                </TouchableOpacity>
-            </ThemedView>
-            {warningIsOpen && (
-                <ThemedView style={styles.avoidContainer}>
-                    <Text style={styles.avoidText}>Avoid this product</Text>
-                    <ThemedView style={styles.allergenTagContainer}>
-                        {foodRestrictions?.map((allergen, index) => (
-                            <AllergenTag key={index} label={allergen} selected={true} border={false} />
-                        ))}
-                    </ThemedView>
-                </ThemedView>
-            )}
+export default function WarningTag({
+  warningIsOpen,
+  setWarningIsOpen,
+  allergenRestrictions,
+  dietaryRestrictions,
+}: WarningTagProps) {
+  const firstItem = allergenRestrictions[0] || dietaryRestrictions[0] || '';
+
+  return (
+    <ThemedView style={warningIsOpen ? styles.openedDropdown : styles.unOpenedDropdown}>
+      <ThemedView style={warningIsOpen ? styles.openedContainer : styles.unOpenedContainer}>
+        <ThemedView style={styles.textContainer}>
+          <Image source={require('@/assets/images/warning.png')} />
+          <Text style={styles.containsText}>Contains</Text>
+          {!warningIsOpen && (
+            <AllergenTag
+              label={firstItem}
+              selected={true}
+              variant={allergenRestrictions.includes(firstItem) ? 'allergen' : 'diet'}
+              border={false}
+            />
+          )}
         </ThemedView>
-    );
+        <TouchableOpacity onPress={() => setWarningIsOpen(!warningIsOpen)}>
+          <Image source={require('@/assets/images/open-dropdown.png')} />
+        </TouchableOpacity>
+      </ThemedView>
+
+      {warningIsOpen && (
+        <ThemedView style={styles.avoidContainer}>
+          <Text style={styles.avoidText}>Avoid this product</Text>
+
+          <ThemedView style={styles.allergenTagContainer}>
+            {allergenRestrictions.map((item, index) => (
+              <AllergenTag
+                key={`allergen-${index}`}
+                label={item}
+                selected={true}
+                variant="allergen"
+                border={false}
+              />
+            ))}
+            {dietaryRestrictions.map((item, index) => (
+              <AllergenTag
+                key={`diet-${index}`}
+                label={item}
+                selected={true}
+                variant="diet"
+                border={false}
+              />
+            ))}
+          </ThemedView>
+        </ThemedView>
+      )}
+    </ThemedView>
+  );
 }
 
 const styles = StyleSheet.create({

@@ -20,6 +20,8 @@ export async function queryIngredients(photoUri: string) {
                 Give me a list of the most important (at most 10) ingredients in command separated form. 
                 Please do not include random chemicals, only the most important ingredients.
                 Each ingredient should easy-to-read and no more than 2 words.
+                Please keep ingredient names simple and consistent. For example, Peanuts should not be 
+                rewritten as Roasted Peanuts or another form. 
                 If the ingredients label is not visible, don't return anything.`,
               createPartFromUri(image.uri ?? "", image.mimeType ?? ""),
             ]),
@@ -40,13 +42,16 @@ export async function querySafety({ingredients, allergies, dietaryRestrictions} 
       Here are the product ingredients: ${ingredients}.
       
       1. Based on the ingredients, list the subset of ingredients that trigger allergies. 
-      All allergies should be from the ingredients list.
+      All output allergies must be from the ingredients list. 
       2. Also list the dietary restrictions that are violated (e.g., Gluten-Free, Vegan, etc).
-      All output dietary restrictions should be from the dietary restrictions list.
+      All output dietary restrictions must be from the dietary restrictions list.
       
       Please format your output in one comma-separated list sections:
       The comma-separated list should contain both triggered allergies
       and violated dietary restrictions. 
+
+      Please keep ingredient names simple and consistent. For example, Peanuts should not be 
+      rewritten as Roasted Peanuts or another form. 
 
       If there are none, return an empty string.
     `.trim();

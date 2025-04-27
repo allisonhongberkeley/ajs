@@ -10,7 +10,7 @@ import { useRouter, useLocalSearchParams } from 'expo-router';
 import { useUserPreferences } from '@/utils/preferencesContext';
 
 export default function ResultsScreen( { isSafe, foodImage, foodName} : { isSafe: boolean, foodImage: string, foodName: string}) {
-    const { selectedRestrictions } = useUserPreferences();
+    const { selectedAllergens, selectedRestrictions } = useUserPreferences();
     const [warningIsOpen, setWarningIsOpen] = useState(false);
     const { ingredients, safety } = useLocalSearchParams();
     const bottomSheetRef = useRef(null);
@@ -28,21 +28,28 @@ export default function ResultsScreen( { isSafe, foodImage, foodName} : { isSafe
     const nonSafeItems = safety
         ? (safety as string).split(',').map(item => item.trim())
         : [];
+
+
+     /* Separate into allergens vs diets */
+    const violatedAllergies = nonSafeItems.filter(ingredient => 
+        selectedAllergens.some(allergen => 
+        ingredient.toLowerCase().includes(allergen.toLowerCase())
+        )
+    );
     
-     const violatedDiets = nonSafeItems.filter(ingredient => {
-        return selectedRestrictions.some(restriction => {
-            const restrictionLower = restriction.toLowerCase();
-            const ingredientLower = ingredient.toLowerCase();
-            return ingredientLower.includes(restrictionLower);
-        });
-     })
+    const violatedDiets = nonSafeItems.filter(ingredient => 
+        selectedRestrictions.some(restriction => 
+        ingredient.toLowerCase().includes(restriction.toLowerCase())
+        )
+    );
     
     console.log(nonSafeItems);
 
     return (
         <GestureHandlerRootView>
             <ImageBackground source={require('@/assets/images/camera-background.png')} style={styles.container}>
-                <WarningTag warningIsOpen={warningIsOpen} setWarningIsOpen={setWarningIsOpen} foodRestrictions={nonSafeItems}/>
+                <WarningTag warningIsOpen={warningIsOpen} setWarningIsOpen={setWarningIsOpen} allergenRestrictions={violatedAllergies} 
+  dietaryRestrictions={violatedDiets}/>
                 <BottomSheet 
                     ref={bottomSheetRef}
                     index={0} // Initial snap point index (0 = 25%)
@@ -53,16 +60,18 @@ export default function ResultsScreen( { isSafe, foodImage, foodName} : { isSafe
                     <BottomSheetView style={styles.foodInfoContainer}>
                         <Image source={require('@/assets/images/strawberry.png')} style={styles.foodImage}/>
                         <Text style={styles.foodName}>Food Name</Text>
-                        <View style={styles.card}>
+                        {violatedDiets.map((diet, index) => (
+                            <View style={styles.card} key={`violated-diet-${index}`}>
                             <View style={styles.cardHeader}>
-                            <Image
+                                <Image
                                 source={require('@/assets/images/glutenfree.png')}
-                                style={styles.cardIcon}
+                                style={styles.dietIcon}
                                 resizeMode="contain"
-                            />
-                                <Text style={styles.cardTitle}>Is Not {violatedDiets}</Text>
+                                />
+                                <Text style={styles.cardTitle}>Is Not {diet}</Text>
                             </View>
-                        </View>
+                            </View>
+                        ))}
                         <View style={styles.card}>
                             <View style={styles.cardHeader}>
                                 <Image
@@ -166,6 +175,11 @@ const styles = StyleSheet.create({
       cardIcon: {
         width: 24,
         height: 24,
+        marginRight: 8,
+      },
+      dietIcon: {
+        width: 36,
+        height: 36,
         marginRight: 8,
       },
       cardTitle: {
