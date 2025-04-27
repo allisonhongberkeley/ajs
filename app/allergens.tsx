@@ -1,6 +1,5 @@
 import { SafeAreaView, View, StyleSheet, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 import { useState } from 'react'; 
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Keyboard } from 'react-native'; 
 import { ThemedView } from '@/components/ThemedView';
 import { Ionicons } from '@expo/vector-icons';
@@ -11,32 +10,36 @@ import { useUserPreferences } from '@/utils/preferencesContext';
 
 
 export default function AllergensScreen() {
-    const insets = useSafeAreaInsets();
-  const [allergens, setAllergens] = useState<string[]>([
-    'Peanuts', 'All Tree Nuts', 'Soy', 'Eggs', 'Milk/Dairy', 'Wheat', 'Walnuts', 'Cashews',
-  ]);
-  const { selectedAllergens, setSelectedAllergens } = useUserPreferences();
-  const [searchText, setSearchText] = useState('');
-
-  const toggleAllergen = (item: string): void => {
-    const newSelected = selectedAllergens.includes(item)
-      ? selectedAllergens.filter(i => i !== item)
-      : [...selectedAllergens, item];
+    const { selectedAllergens, setSelectedAllergens, customAllergens, setCustomAllergens } = useUserPreferences();
+    const [searchText, setSearchText] = useState('');
   
-    setSelectedAllergens(newSelected); 
-  };
+    const defaultAllergens = [
+      'Peanuts', 'All Tree Nuts', 'Soy', 'Eggs', 'Milk/Dairy', 'Wheat', 'Walnuts', 'Cashews',
+    ];
   
-  const handleAddCustomAllergen = () => {
-    const trimmed = searchText.trim();
-    if (trimmed && !allergens.includes(trimmed)) {
-      setAllergens(prev => [trimmed, ...prev]);
+    const allAllergens = [...customAllergens, ...defaultAllergens]; // ← combined list
   
-      const newSelectedAllergens = [...selectedAllergens, trimmed];
-      setSelectedAllergens(newSelectedAllergens);
-    }
-    setSearchText('');
-    Keyboard.dismiss();
-  };
+    const toggleAllergen = (item: string): void => {
+      const newSelected = selectedAllergens.includes(item)
+        ? selectedAllergens.filter(i => i !== item)
+        : [...selectedAllergens, item];
+  
+      setSelectedAllergens(newSelected);
+    };
+  
+    const handleAddCustomAllergen = () => {
+        const trimmed = searchText.trim();
+        if (trimmed && !allAllergens.includes(trimmed)) {
+          const newCustomAllergens = [trimmed, ...customAllergens];
+          const newSelectedAllergens = [...selectedAllergens, trimmed];
+      
+          setCustomAllergens(newCustomAllergens);
+          setSelectedAllergens(newSelectedAllergens);
+        }
+        setSearchText('');
+        Keyboard.dismiss();
+      };
+      
 
   const router = useRouter();
 
@@ -72,7 +75,7 @@ export default function AllergensScreen() {
 
       <View style={styles.allergensContainer}>
         <View style={styles.tagsWrapper}>
-          {allergens.map((item) => (
+          {allAllergens.map((item) => (
             <AllergenTag
               key={item}
               label={item}
@@ -148,6 +151,7 @@ const styles = StyleSheet.create({
     marginVertical: 16, 
   },
   allergensContainer: {
+    display: 'flex',
     padding: 10,
     borderRadius: 12,
     borderWidth: 1,
@@ -156,6 +160,7 @@ const styles = StyleSheet.create({
   },
   tagsWrapper: {
     flexDirection: 'row',
+    gap: 10,
     flexWrap: 'wrap',
   },
   nextButton: {

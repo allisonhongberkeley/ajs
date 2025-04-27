@@ -8,105 +8,112 @@ import ProgressBar from '@/components/ProgressBar';
 import { useUserPreferences } from '@/utils/preferencesContext';
 
 export default function DietRestrictions() {
-    const [dietaryRestrictions, setDietaryRestrictions] = useState<string[]>([
-        'Gluten-Free',
-        'Keto',
-        'Vegan',
-        'Vegetarian',
-        'Dairy-Free',
-        'Nut-Free',
-        'Soy-Free',
-        'Egg-Free',
-        'Pescatarian',
-        'Paleo',
-        'Halal',
-        'Kosher',
-        'Shellfish-Free',
-        'Sugar-Free',
-        'Low-Carb',
-      ]);
-  const { selectedRestrictions, setSelectedRestrictions } = useUserPreferences();
-  const [searchText, setSearchText] = useState('');
-
-  const toggleAllergen = (item: string): void => {
-    const newSelectedRestrictions = selectedRestrictions.includes(item)
-      ? selectedRestrictions.filter(i => i !== item)
-      : [...selectedRestrictions, item];
+    const {
+      selectedRestrictions,
+      setSelectedRestrictions,
+      customDietaryRestrictions,
+      setCustomDietaryRestrictions,
+    } = useUserPreferences();
+    
+    const [searchText, setSearchText] = useState('');
   
-    setSelectedRestrictions(newSelectedRestrictions);
-  };
+    const defaultRestrictions = [
+      'Gluten-Free',
+      'Keto',
+      'Vegan',
+      'Vegetarian',
+      'Dairy-Free',
+      'Nut-Free',
+      'Soy-Free',
+      'Egg-Free',
+      'Pescatarian',
+      'Paleo',
+      'Halal',
+      'Kosher',
+      'Shellfish-Free',
+      'Sugar-Free',
+      'Low-Carb',
+    ];
   
-
-  const handleAddCustomAllergen = () => {
-    const trimmed = searchText.trim();
-    if (trimmed && !dietaryRestrictions.includes(trimmed)) {
-      setDietaryRestrictions(prev => [trimmed, ...prev]);
+    const allDietaryRestrictions = [...customDietaryRestrictions, ...defaultRestrictions];
   
-      const newSelectedRestrictions = [...selectedRestrictions, trimmed];
+    const toggleRestriction = (item: string): void => {
+      const newSelectedRestrictions = selectedRestrictions.includes(item)
+        ? selectedRestrictions.filter(i => i !== item)
+        : [...selectedRestrictions, item];
+  
       setSelectedRestrictions(newSelectedRestrictions);
-    }
-    setSearchText('');
-    Keyboard.dismiss();
-  };
+    };
   
-
-  const router = useRouter();
-
-  const handleNext = () => {
-    router.push('/camera'); 
-  };
-
-  return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
-    <ThemedView style={styles.container}>
-
-    <ProgressBar step={2} />
-
-    <View style={styles.titleContainer}>
-      <Text style={styles.title}>My Diet Restrictions</Text>
-      <Text style={styles.subtitle}>Select your dietary restrictions/foods you want to avoid.</Text>
-    </View>
-
-      <View style={styles.divider} />
-
-      <View style={styles.searchContainer}>
-        <Ionicons name="search" size={20} color="#999" style={styles.searchIcon} />
-        <TextInput
-          style={styles.searchInput}
-          placeholder="Search for specific diets"
-          placeholderTextColor="#999"
-          value={searchText}
-          onChangeText={setSearchText}
-          onSubmitEditing={handleAddCustomAllergen}
-          returnKeyType="done"
-        />
-      </View>
-
-      <View style={styles.dietaryRestrictionsContainer}>
-        <View style={styles.tagsWrapper}>
-          {dietaryRestrictions.map((item) => (
-            <AllergenTag
-              key={item}
-              label={item}
-              selected={selectedRestrictions.includes(item)}
-              onPress={() => toggleAllergen(item)}
-              variant='diet'
+    const handleAddCustomRestriction = () => {
+      const trimmed = searchText.trim();
+      if (trimmed && !allDietaryRestrictions.includes(trimmed)) {
+        const newCustomRestrictions = [trimmed, ...customDietaryRestrictions];
+        const newSelectedRestrictions = [...selectedRestrictions, trimmed];
+  
+        setCustomDietaryRestrictions(newCustomRestrictions);
+        setSelectedRestrictions(newSelectedRestrictions);
+      }
+      setSearchText('');
+      Keyboard.dismiss();
+    };
+  
+    const router = useRouter();
+  
+    const handleNext = () => {
+      router.push('/camera'); 
+    };
+  
+    return (
+      <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+        <ThemedView style={styles.container}>
+          <ProgressBar step={2} />
+  
+          <View style={styles.titleContainer}>
+            <Text style={styles.title}>My Diet Restrictions</Text>
+            <Text style={styles.subtitle}>Select your dietary restrictions/foods you want to avoid.</Text>
+          </View>
+  
+          <View style={styles.divider} />
+  
+          <View style={styles.searchContainer}>
+            <Ionicons name="search" size={20} color="#999" style={styles.searchIcon} />
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Search for specific diets"
+              placeholderTextColor="#999"
+              value={searchText}
+              onChangeText={setSearchText}
+              onSubmitEditing={handleAddCustomRestriction}
+              returnKeyType="done"
             />
-          ))}
-        </View>
-      </View>
-
-      <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
-        <Image
-          source={require('@/assets/images/next.png')}
-          style={styles.nextIcon}
-          resizeMode="contain"
-        />
-      </TouchableOpacity>
-    </ThemedView>
-    </SafeAreaView>
-  );
-}
+          </View>
+  
+          <View style={styles.dietaryRestrictionsContainer}>
+            <View style={styles.tagsWrapper}>
+              {allDietaryRestrictions.map((item) => (
+                <AllergenTag
+                  key={item}
+                  label={item}
+                  selected={selectedRestrictions.includes(item)}
+                  onPress={() => toggleRestriction(item)}
+                  variant='diet'
+                />
+              ))}
+            </View>
+          </View>
+  
+          <TouchableOpacity style={styles.nextButton} onPress={handleNext}>
+            <Image
+              source={require('@/assets/images/next.png')}
+              style={styles.nextIcon}
+              resizeMode="contain"
+            />
+          </TouchableOpacity>
+        </ThemedView>
+      </SafeAreaView>
+    );
+  }  
 
 const styles = StyleSheet.create({
   container: {
@@ -169,6 +176,7 @@ const styles = StyleSheet.create({
   tagsWrapper: {
     flexDirection: 'row',
     flexWrap: 'wrap',
+    gap: 10,
   },
   nextButton: {
     marginTop: 20,
