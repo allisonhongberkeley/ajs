@@ -56,14 +56,14 @@ export default function ResultsScreen( { isSafe, foodImage, foodName} : { isSafe
         selectedAllergens.some(allergen => 
         ingredient.toLowerCase().includes(allergen.toLowerCase())
         )
-    );
+    ))];
     
-    const violatedDiets = nonSafeItems.filter(ingredient => 
+    const violatedDiets = [...new Set(nonSafeItems.filter(ingredient => 
         selectedRestrictions.some(restriction => 
         ingredient.toLowerCase().includes(restriction.toLowerCase())
         )
-    );)]
-    
+    ))];
+
     console.log(nonSafeItems);
 
     return (
