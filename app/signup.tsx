@@ -1,6 +1,6 @@
 import { StyleSheet, TextInput, Button, Alert, Image } from 'react-native';
 import { useState } from 'react';
-import { useRouter } from 'expo-router'; // 👈 import useRouter
+import { useRouter } from 'expo-router'; 
 
 import { ThemedView } from '@/components/ThemedView';
 import { ThemedText } from '@/components/ThemedText';

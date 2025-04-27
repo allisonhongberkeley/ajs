@@ -32,6 +32,7 @@ export default function RootLayout() {
         <Stack.Screen name="start" options={{ headerShown: false }} />
         <Stack.Screen name="signup" options={{ headerShown: false }} />
         <Stack.Screen name="allergens" options={{ headerShown: false }} />
+        <Stack.Screen name="diet-restrictions" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
       </Stack>
     </ThemeProvider>

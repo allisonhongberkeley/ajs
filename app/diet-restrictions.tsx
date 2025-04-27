@@ -6,24 +6,39 @@ import { useRouter } from 'expo-router';
 import { AllergenTag } from '@/components/AllergenTag';
 import ProgressBar from '@/components/ProgressBar'; // adjust path if needed
 
-export default function AllergensScreen() {
-  const [allergens, setAllergens] = useState<string[]>([
-    'Peanuts', 'All Tree Nuts', 'Soy', 'Eggs', 'Milk/Dairy', 'Wheat', 'Walnuts', 'Cashews',
-  ]);
-  const [selectedAllergens, setSelectedAllergens] = useState<string[]>([]);
+export default function DietRestrictions() {
+    const [dietaryRestrictions, setDietaryRestrictions] = useState<string[]>([
+        'Gluten-Free',
+        'Vegan',
+        'Vegetarian',
+        'Dairy-Free',
+        'Nut-Free',
+        'Soy-Free',
+        'Egg-Free',
+        'Pescatarian',
+        'Keto',
+        'Paleo',
+        'Low FODMAP',
+        'Halal',
+        'Kosher',
+        'Shellfish-Free',
+        'Sugar-Free',
+        'Low-Carb',
+      ]);
+  const [selectedRestrictions, setselectedRestrictions] = useState<string[]>([]);
   const [searchText, setSearchText] = useState('');
 
   const toggleAllergen = (item: string) => {
-    setSelectedAllergens(prev =>
+    setselectedRestrictions(prev =>
       prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item]
     );
   };
 
   const handleAddCustomAllergen = () => {
     const trimmed = searchText.trim();
-    if (trimmed && !allergens.includes(trimmed)) {
-      setAllergens(prev => [trimmed, ...prev]);
-      setSelectedAllergens(prev => [...prev, trimmed]);
+    if (trimmed && !dietaryRestrictions.includes(trimmed)) {
+      setDietaryRestrictions(prev => [trimmed, ...prev]);
+      setselectedRestrictions(prev => [...prev, trimmed]);
     }
     setSearchText('');
   };
@@ -36,11 +51,11 @@ export default function AllergensScreen() {
 
   return (
     <ThemedView style={styles.container}>
-    <ProgressBar step={1} />
+    <ProgressBar step={2} />
 
     <View style={styles.titleContainer}>
-      <Text style={styles.title}>I'm allergic to...</Text>
-      <Text style={styles.subtitle}>Select your allergies.</Text>
+      <Text style={styles.title}>My Diet Restrictions</Text>
+      <Text style={styles.subtitle}>Select your dietary restrictions/foods you want to avoid.</Text>
     </View>
 
       <View style={styles.divider} />
@@ -49,7 +64,7 @@ export default function AllergensScreen() {
         <Ionicons name="search" size={20} color="#999" style={styles.searchIcon} />
         <TextInput
           style={styles.searchInput}
-          placeholder="Search for specific allergens"
+          placeholder="Search for specific dietaryRestrictions"
           placeholderTextColor="#999"
           value={searchText}
           onChangeText={setSearchText}
@@ -58,15 +73,15 @@ export default function AllergensScreen() {
         />
       </View>
 
-      <View style={styles.allergensContainer}>
+      <View style={styles.dietaryRestrictionsContainer}>
         <View style={styles.tagsWrapper}>
-          {allergens.map((item) => (
+          {dietaryRestrictions.map((item) => (
             <AllergenTag
               key={item}
               label={item}
-              selected={selectedAllergens.includes(item)}
+              selected={selectedRestrictions.includes(item)}
               onPress={() => toggleAllergen(item)}
-              variant="allergen"
+              variant='diet'
             />
           ))}
         </View>
@@ -127,7 +142,8 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 16,
     color: '#333',
-    borderColor: 'none',     
+    borderWidth: 0,     
+    outline: 'none', 
   },
   divider: {
     height: 1,
@@ -135,7 +151,7 @@ const styles = StyleSheet.create({
     width: '100%',
     marginVertical: 16, 
   },
-  allergensContainer: {
+  dietaryRestrictionsContainer: {
     padding: 10,
     borderRadius: 12,
     borderWidth: 1,
