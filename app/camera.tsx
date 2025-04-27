@@ -1,15 +1,18 @@
 import { CameraProfileToggle } from '@/components/CameraProfileToggle';
 import { ThemedView } from "@/components/ThemedView";
 import { useEffect, useRef, useState } from "react";
-import { StyleSheet, Image, ImageBackground, View, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, Image, ImageBackground, View, Text, TouchableOpacity, ActivityIndicator } from "react-native";
 import { Camera, CameraView } from 'expo-camera';
 import { useRouter } from 'expo-router';
-import { queryIngredients } from '@/api/GeminiAPI/query';
+import { queryIngredients, querySafety } from '@/api/GeminiAPI/query';
+import { useUserPreferences } from '@/utils/preferencesContext';
 
 export default function CameraScreen() {
     const cameraRef = useRef<CameraView>(null);
     const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
     const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+    const { selectedAllergens: allergies, selectedRestrictions: dietaryRestrictions} = useUserPreferences();
+    const [loading, setLoading] = useState(false);
     const router = useRouter();
     
     useEffect(() => {
@@ -44,8 +47,10 @@ export default function CameraScreen() {
     };
 
     const analyzeIngredients = async(uri: string) => {
+      setLoading(true);
       const ingredients = await queryIngredients(uri);
-      console.log(ingredients);
+      const safety = await querySafety({ ingredients, allergies, dietaryRestrictions });
+      setLoading(false);
     };
 
     return (
@@ -64,15 +69,20 @@ export default function CameraScreen() {
             )}
 
             </ThemedView>
-            <Text>Scan the ingredients list</Text>
 
-            <TouchableOpacity onPress={handleTakePhoto}>
-              <Image
-                source={require('@/assets/images/click.png')}
-                style={styles.nextIcon}
-                resizeMode="contain"
-              />
-            </TouchableOpacity>
+            <View style={styles.actionContainer}>
+              {loading ? (
+                <ActivityIndicator size="large" color="#000" />
+              ) : (
+                <TouchableOpacity onPress={handleTakePhoto}>
+                  <Image
+                    source={require('@/assets/images/click.png')}
+                    style={styles.nextIcon}
+                    resizeMode="contain"
+                  />
+                </TouchableOpacity>
+              )}
+            </View>
 
             <CameraProfileToggle/>
         </ImageBackground>
@@ -120,5 +130,9 @@ const styles = StyleSheet.create({
   nextIcon: {
     height: 48,
     width: 48,
-  }
+  },
+  actionContainer: {
+    marginTop: 24, 
+    alignItems: 'center',
+  },
 });
