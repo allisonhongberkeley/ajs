@@ -9,7 +9,7 @@ interface SignUpButtonProps {
 export function SignUpButton({ onPress }: SignUpButtonProps) {
   return (
     <LinearGradient
-      colors={['rgba(26, 163, 255, 0.8)', 'rgba(255, 255, 255, 0.8)']}
+      colors={['rgba(26, 163, 255, 0.8)', 'rgba(216, 219, 231, 0.8)']}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 0 }}
       style={styles.buttonContainer}
