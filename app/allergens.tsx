@@ -1,31 +1,41 @@
-import { View, StyleSheet, Text, TextInput, TouchableOpacity, Image } from 'react-native';
+import { SafeAreaView, View, StyleSheet, Text, TextInput, TouchableOpacity, Image } from 'react-native';
 import { useState } from 'react'; 
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Keyboard } from 'react-native'; 
 import { ThemedView } from '@/components/ThemedView';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { AllergenTag } from '@/components/AllergenTag';
-import ProgressBar from '@/components/ProgressBar'; // adjust path if needed
+import ProgressBar from '@/components/ProgressBar'; 
+import { useUserPreferences } from '@/utils/preferencesContext';
+
 
 export default function AllergensScreen() {
+    const insets = useSafeAreaInsets();
   const [allergens, setAllergens] = useState<string[]>([
     'Peanuts', 'All Tree Nuts', 'Soy', 'Eggs', 'Milk/Dairy', 'Wheat', 'Walnuts', 'Cashews',
   ]);
-  const [selectedAllergens, setSelectedAllergens] = useState<string[]>([]);
+  const { selectedAllergens, setSelectedAllergens } = useUserPreferences();
   const [searchText, setSearchText] = useState('');
 
-  const toggleAllergen = (item: string) => {
-    setSelectedAllergens(prev =>
-      prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item]
-    );
+  const toggleAllergen = (item: string): void => {
+    const newSelected = selectedAllergens.includes(item)
+      ? selectedAllergens.filter(i => i !== item)
+      : [...selectedAllergens, item];
+  
+    setSelectedAllergens(newSelected); 
   };
-
+  
   const handleAddCustomAllergen = () => {
     const trimmed = searchText.trim();
     if (trimmed && !allergens.includes(trimmed)) {
       setAllergens(prev => [trimmed, ...prev]);
-      setSelectedAllergens(prev => [...prev, trimmed]);
+  
+      const newSelectedAllergens = [...selectedAllergens, trimmed];
+      setSelectedAllergens(newSelectedAllergens);
     }
     setSearchText('');
+    Keyboard.dismiss();
   };
 
   const router = useRouter();
@@ -35,6 +45,8 @@ export default function AllergensScreen() {
   };
 
   return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
+
     <ThemedView style={styles.container}>
     <ProgressBar step={1} />
 
@@ -80,6 +92,7 @@ export default function AllergensScreen() {
         />
       </TouchableOpacity>
     </ThemedView>
+    </SafeAreaView>
   );
 }
 
@@ -89,7 +102,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 40,
     backgroundColor: 'white',
-    position: 'relative', 
   },
   titleContainer: {
     display: 'flex',
