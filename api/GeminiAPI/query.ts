@@ -17,9 +17,9 @@ export async function queryIngredients(photoUri: string) {
           contents: [
             createUserContent([
                 `What are the ingredients of the food in the image? 
-                Give me a list of the most importamt ingredients in command separated form. 
+                Give me a list of the most important (at most 10) ingredients in command separated form. 
                 Please do not include random chemicals, only the most important ingredients.
-                Each ingredient should easy-to-read and no more than two words.
+                Each ingredient should easy-to-read and no more than 2 words.
                 If the ingredients label is not visible, don't return anything.`,
               createPartFromUri(image.uri ?? "", image.mimeType ?? ""),
             ]),
@@ -34,13 +34,23 @@ export async function queryIngredients(photoUri: string) {
 }
 
 export async function querySafety({ingredients, allergies, dietaryRestrictions} : {ingredients: string, allergies: string[], dietaryRestrictions: string[]}) {
-    const prompt = 
-        `I have the following allergies: ${allergies.join(', ')}.
-        I follow these dietary restrictions: ${dietaryRestrictions.join(', ')}.
-        Here are the product ingredients: ${ingredients}.
-        Based on this, is it safe for me to eat this product? 
-        Answer Yes or No. If no, give me a list of the ingredients I cannot consume`
-        .trim();
+  const prompt = 
+      `I have the following allergies: ${allergies.join(', ')}.
+      I follow these dietary restrictions: ${dietaryRestrictions.join(', ')}.
+      Here are the product ingredients: ${ingredients}.
+      
+      1. Based on the ingredients, list the subset of ingredients that trigger allergies. 
+      All allergies should be from the ingredients list.
+      2. Also list the dietary restrictions that are violated (e.g., Gluten-Free, Vegan, etc).
+      All output dietary restrictions should be from the dietary restrictions list.
+      
+      Please format your output in one comma-separated list sections:
+      The comma-separated list should contain both triggered allergies
+      and violated dietary restrictions. 
+
+      If there are none, return an empty string.
+    `.trim();
+
     
     console.log(prompt);
     const response = await ai.models.generateContent({
@@ -48,5 +58,5 @@ export async function querySafety({ingredients, allergies, dietaryRestrictions} 
         contents: prompt,
     });
     console.log(response.text);
-    return response.text;
+    return response.text ?? "";
 }
