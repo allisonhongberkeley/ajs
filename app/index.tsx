@@ -13,7 +13,7 @@ export default function Index() {
         Know before you buy.
       </Text>
 
-      <SignUpButton onPress={() => router.push('/results')} />
+      <SignUpButton onPress={() => router.push('/signup')} />
     </ThemedView>
   );
 }

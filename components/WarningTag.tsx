@@ -11,7 +11,7 @@ export default function WarningTag( {warningIsOpen, setWarningIsOpen, foodRestri
                 <ThemedView style={styles.textContainer}>
                     <Image source={require('@/assets/images/warning.png')} />
                     <Text style={styles.containsText}>Contains</Text>
-                    {!warningIsOpen && <AllergenTag label="Gluten" selected={true} />}
+                    {!warningIsOpen && <AllergenTag label={foodRestrictions?.[0] ?? ''} selected={true} />}
                 </ThemedView>
                 <TouchableOpacity onPress={() => setWarningIsOpen(!warningIsOpen)}>
                     <Image source={require('@/assets/images/open-dropdown.png')} />
@@ -21,14 +21,9 @@ export default function WarningTag( {warningIsOpen, setWarningIsOpen, foodRestri
                 <ThemedView style={styles.avoidContainer}>
                     <Text style={styles.avoidText}>Avoid this product</Text>
                     <ThemedView style={styles.allergenTagContainer}>
-                        <AllergenTag label="Gluten" selected={true} />
-                        <AllergenTag label="Gluten" selected={true} />
-                        <AllergenTag label="Gluten" selected={true} />
-                        <AllergenTag label="Gluten" selected={true} />
-                        <AllergenTag label="Gluten" selected={true} />
-                        <AllergenTag label="Gluten" selected={true} />
-                        <AllergenTag label="Gluten" selected={true} />
-                        <AllergenTag label="Gluten" selected={true} />
+                        {foodRestrictions?.map((allergen, index) => (
+                            <AllergenTag key={index} label={allergen} selected={true} border={false} />
+                        ))}
                     </ThemedView>
                 </ThemedView>
             )}
@@ -82,7 +77,7 @@ const styles = StyleSheet.create({
         lineHeight: 22, // 137.5%
     },
     avoidContainer: {
-        gap: 4,
+        gap: 12,
     },
     avoidText: {
         color: "#000",
@@ -96,5 +91,6 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "row",
         flexWrap: "wrap",
+        gap: 8,
     }
   });

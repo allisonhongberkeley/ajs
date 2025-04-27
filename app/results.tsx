@@ -11,7 +11,7 @@ export default function ResultsScreen( { isSafe, foodImage, foodName, foodRestri
     const bottomSheetRef = useRef(null);
 
     // Define snap points (e.g., 25% and 100% of screen)
-    const snapPoints = useMemo(() => [warningIsOpen ? '34%' : '60%', '80%'], [warningIsOpen]);
+    const snapPoints = useMemo(() => [warningIsOpen ? '34%' : '300%', '50%'], [warningIsOpen]);
     return (
         <GestureHandlerRootView>
             <ImageBackground source={require('@/assets/images/camera-background.png')} style={styles.container}>
