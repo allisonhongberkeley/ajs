@@ -39,7 +39,7 @@ export async function queryIngredients(photoUri: string) {
           ],
         });
     
-        console.log(geminiResponse.text);
+        //console.log(geminiResponse.text);
         return geminiResponse.text ?? "";
       } catch (error) {
         console.error('Error uploading to Gemini:', error);
@@ -72,7 +72,7 @@ export async function querySafety({ingredients, allergies, dietaryRestrictions} 
         model: "gemini-2.0-flash",
         contents: prompt,
     });
-    console.log(response.text);
+    // console.log(response.text);
     return response.text;
 }
 

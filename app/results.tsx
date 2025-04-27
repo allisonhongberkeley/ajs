@@ -16,23 +16,23 @@ export default function ResultsScreen( { isSafe, foodImage, foodName} : { isSafe
     const bottomSheetRef = useRef(null);
     const router = useRouter();
 
-    const defaultRestrictions = [
-        'Gluten-Free',
-        'Keto',
-        'Vegan',
-        'Vegetarian',
-        'Dairy-Free',
-        'Nut-Free',
-        'Soy-Free',
-        'Egg-Free',
-        'Pescatarian',
-        'Paleo',
-        'Halal',
-        'Kosher',
-        'Shellfish-Free',
-        'Sugar-Free',
-        'Low-Carb',
-      ];
+    // const defaultRestrictions = [
+    //     'Gluten-Free',
+    //     'Keto',
+    //     'Vegan',
+    //     'Vegetarian',
+    //     'Dairy-Free',
+    //     'Nut-Free',
+    //     'Soy-Free',
+    //     'Egg-Free',
+    //     'Pescatarian',
+    //     'Paleo',
+    //     'Halal',
+    //     'Kosher',
+    //     'Shellfish-Free',
+    //     'Sugar-Free',
+    //     'Low-Carb',
+    //   ];
 
     // Define snap points (e.g., 25% and 100% of screen)
     const snapPoints = useMemo(() => [warningIsOpen ? '34%' : '300%', '50%'], [warningIsOpen]);
@@ -46,9 +46,13 @@ export default function ResultsScreen( { isSafe, foodImage, foodName} : { isSafe
     let nonSafeItems = safety
         ? (safety as string).split(',').map(item => item.trim())
         : [];
+    
+    const recommendationsList = recommendations
+        ? (recommendations as string).split(',').map(item => item.trim())
+        : [];
 
     // Filter out dietary restrictions
-    nonSafeItems = [...new Set(nonSafeItems.filter(item => !defaultRestrictions.includes(item)))];
+    // nonSafeItems = [...new Set(nonSafeItems.filter(item => !defaultRestrictions.includes(item)))];
 
 
      /* Separate into allergens vs diets */
@@ -65,6 +69,7 @@ export default function ResultsScreen( { isSafe, foodImage, foodName} : { isSafe
     ))];
 
     console.log(nonSafeItems);
+    console.log(recommendationsList);
 
     return (
         <GestureHandlerRootView>
@@ -141,14 +146,14 @@ export default function ResultsScreen( { isSafe, foodImage, foodName} : { isSafe
                                             source={require('@/assets/images/strawberry.png')}
                                             style={styles.recImage}
                                         />
-                                        <Text style={styles.recText}>{recommendations.split(',')[0]}</Text>
+                                        <Text style={styles.recText}>{recommendationsList[0]}</Text>
                                     </View>
                                     <View style={styles.recommendation}>
                                         <Image
                                             source={require('@/assets/images/strawberry.png')}
                                             style={styles.recImage}
                                         />
-                                        <Text style={styles.recText}>{recommendations.split(',')[1]}</Text>
+                                        <Text style={styles.recText}>{recommendationsList[1]}</Text>
                                     </View>
                                 </View>
                             </View>
@@ -227,11 +232,6 @@ const styles = StyleSheet.create({
       cardIcon: {
         width: 16,
         height: 16,
-        marginRight: 8,
-      },
-      dietIcon: {
-        width: 36,
-        height: 36,
         marginRight: 8,
       },
       dietIcon: {
