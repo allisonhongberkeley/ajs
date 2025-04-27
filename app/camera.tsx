@@ -3,11 +3,15 @@ import { ThemedView } from "@/components/ThemedView";
 import { useEffect, useRef, useState } from "react";
 import { StyleSheet, Image, ImageBackground, View, Text, TouchableOpacity } from "react-native";
 import { Camera, CameraView } from 'expo-camera';
+import { useRouter } from 'expo-router';
+import { queryIngredients } from '@/api/GeminiAPI/query';
 
 export default function CameraScreen() {
     const cameraRef = useRef<CameraView>(null);
+    const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
     const [hasPermission, setHasPermission] = useState<boolean | null>(null);
-  
+    const router = useRouter();
+    
     useEffect(() => {
       (async () => {
         const { status } = await Camera.requestCameraPermissionsAsync();
@@ -21,15 +25,54 @@ export default function CameraScreen() {
     if (hasPermission === false) {
       return <View><Text>No camera access</Text></View>;
     }
+
+    const handleTakePhoto = async () => {
+      if (cameraRef.current) {
+        try {
+          const photo = await cameraRef.current.takePictureAsync();
+          if (photo && photo.uri) {
+            setCapturedPhoto(photo.uri);
+            /* After the photo is taken, parse ingredients*/
+            analyzeIngredients(photo.uri);
+          } else {
+            console.error('No photo captured');
+          }
+        } catch (error) {
+          console.error('Failed to take photo', error);
+        }
+      }
+    };
+
+    const analyzeIngredients = async(uri: string) => {
+      const ingredients = await queryIngredients(uri);
+      console.log(ingredients);
+    };
+
     return (
         <ImageBackground source={require('@/assets/images/camera-background.png')} style={styles.container}>
             <ThemedView style={styles.camera}>
-            <CameraView 
-                ref={cameraRef} 
-                style={StyleSheet.absoluteFillObject}
+            {capturedPhoto ? (
+                <Image
+                  source={{ uri: capturedPhoto }}
+                  style={StyleSheet.absoluteFillObject}
                 />
+                ) : (
+                <CameraView
+                  ref={cameraRef}
+                  style={StyleSheet.absoluteFillObject}
+                />
+            )}
+
             </ThemedView>
             <Text>Scan the ingredients list</Text>
+
+            <TouchableOpacity onPress={handleTakePhoto}>
+              <Image
+                source={require('@/assets/images/click.png')}
+                style={styles.nextIcon}
+                resizeMode="contain"
+              />
+            </TouchableOpacity>
 
             <CameraProfileToggle/>
         </ImageBackground>
@@ -74,4 +117,8 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
   },
+  nextIcon: {
+    height: 48,
+    width: 48,
+  }
 });
