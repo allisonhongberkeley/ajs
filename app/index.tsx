@@ -1,10 +1,9 @@
 import { View, StyleSheet, Text, Image, Pressable } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
 import { ThemedView } from '@/components/ThemedView';
+import { SignUpButton } from '@/components/SignUpButton'; 
 import { useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
 
-export default function StartScreen() {
+export default function Index() {
   const router = useRouter();
 
   return (
@@ -14,17 +13,7 @@ export default function StartScreen() {
         Know before you buy.
       </Text>
 
-      <LinearGradient
-        colors={['rgba(0, 0, 0, 0.2)', 'rgba(204, 199, 199, 0.2)']}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 1, y: 0 }}
-        style={styles.buttonContainer}
-      >
-        <Text style={styles.buttonText}>Sign up now</Text>
-        <Pressable onPress={() => router.push('/signup')} style={styles.arrowButton}>
-          <Ionicons name="arrow-forward" size={24} color="#007AFF" />
-        </Pressable>
-      </LinearGradient>
+      <SignUpButton onPress={() => router.push('/signup')} />
     </ThemedView>
   );
 }
@@ -48,27 +37,15 @@ const styles = StyleSheet.create({
     marginVertical: 10,
     color: '#666',
   },
-  buttonContainer: {
+  Container: {
     marginTop: 20,
     flexDirection: 'row', 
     alignItems: 'center',
     justifyContent: 'space-evenly',
-    width: '80%',
+    width: '60%',
     borderRadius: 40,
-    paddingHorizontal: 20,
+    paddingHorizontal: 8,
     paddingVertical: 12,
     overflow: 'hidden',
-  },
-  buttonText: {
-    fontSize: 18,
-    color: '#fff',
-    fontFamily: 'Courier', 
-  },
-  arrowButton: {
-    backgroundColor: 'white',
-    borderRadius: 50,
-    padding: 8,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+  }
 });

@@ -1,14 +1,16 @@
-import { View, StyleSheet, Text, TextInput, TouchableOpacity, Image } from 'react-native';
+import { SafeAreaView, View, StyleSheet, Text, TextInput, TouchableOpacity, Image, Keyboard } from 'react-native';
 import { useState } from 'react'; 
 import { ThemedView } from '@/components/ThemedView';
 import { Ionicons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
 import { AllergenTag } from '@/components/AllergenTag';
-import ProgressBar from '@/components/ProgressBar'; // adjust path if needed
+import ProgressBar from '@/components/ProgressBar'; 
+import { useUserPreferences } from '@/utils/preferencesContext';
 
 export default function DietRestrictions() {
     const [dietaryRestrictions, setDietaryRestrictions] = useState<string[]>([
         'Gluten-Free',
+        'Keto',
         'Vegan',
         'Vegetarian',
         'Dairy-Free',
@@ -16,32 +18,37 @@ export default function DietRestrictions() {
         'Soy-Free',
         'Egg-Free',
         'Pescatarian',
-        'Keto',
         'Paleo',
-        'Low FODMAP',
         'Halal',
         'Kosher',
         'Shellfish-Free',
         'Sugar-Free',
         'Low-Carb',
       ]);
-  const [selectedRestrictions, setselectedRestrictions] = useState<string[]>([]);
+  const { selectedRestrictions, setSelectedRestrictions } = useUserPreferences();
   const [searchText, setSearchText] = useState('');
 
-  const toggleAllergen = (item: string) => {
-    setselectedRestrictions(prev =>
-      prev.includes(item) ? prev.filter(i => i !== item) : [...prev, item]
-    );
+  const toggleAllergen = (item: string): void => {
+    const newSelectedRestrictions = selectedRestrictions.includes(item)
+      ? selectedRestrictions.filter(i => i !== item)
+      : [...selectedRestrictions, item];
+  
+    setSelectedRestrictions(newSelectedRestrictions);
   };
+  
 
   const handleAddCustomAllergen = () => {
     const trimmed = searchText.trim();
     if (trimmed && !dietaryRestrictions.includes(trimmed)) {
       setDietaryRestrictions(prev => [trimmed, ...prev]);
-      setselectedRestrictions(prev => [...prev, trimmed]);
+  
+      const newSelectedRestrictions = [...selectedRestrictions, trimmed];
+      setSelectedRestrictions(newSelectedRestrictions);
     }
     setSearchText('');
+    Keyboard.dismiss();
   };
+  
 
   const router = useRouter();
 
@@ -50,7 +57,9 @@ export default function DietRestrictions() {
   };
 
   return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: 'white' }}>
     <ThemedView style={styles.container}>
+
     <ProgressBar step={2} />
 
     <View style={styles.titleContainer}>
@@ -64,7 +73,7 @@ export default function DietRestrictions() {
         <Ionicons name="search" size={20} color="#999" style={styles.searchIcon} />
         <TextInput
           style={styles.searchInput}
-          placeholder="Search for specific dietaryRestrictions"
+          placeholder="Search for specific diets"
           placeholderTextColor="#999"
           value={searchText}
           onChangeText={setSearchText}
@@ -95,16 +104,16 @@ export default function DietRestrictions() {
         />
       </TouchableOpacity>
     </ThemedView>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    paddingTop: 20,
     flex: 1,
     paddingHorizontal: 20,
-    paddingTop: 40,
     backgroundColor: 'white',
-    position: 'relative', 
   },
   titleContainer: {
     display: 'flex',
@@ -143,7 +152,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#333',
     borderWidth: 0,     
-    outline: 'none', 
   },
   divider: {
     height: 1,
