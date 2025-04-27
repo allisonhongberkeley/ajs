@@ -53,7 +53,7 @@ export default function DietRestrictions() {
   const router = useRouter();
 
   const handleNext = () => {
-    router.push('/diet-restrictions'); 
+    router.push('/camera'); 
   };
 
   return (
